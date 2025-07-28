@@ -1,0 +1,37 @@
+FROM node:23.4-bullseye-slim as builder 
+
+RUN npm install -g pnpm
+
+# Set working directory
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+RUN pnpm run build
+
+FROM node:23.4-bullseye-slim
+
+RUN npm install -g pnpm
+
+# Set working directory
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
+COPY --from=builder /app/knexfile.ts ./
+COPY --from=builder /app/migrations ./migrations
+
+# Install production dependencies only
+RUN pnpm install --prod --frozen-lockfile
+
+# Run Knex migrations
+RUN pnpm run prod:migrate
+
+EXPOSE 3000
+
+CMD ["pnpm", "start"]
