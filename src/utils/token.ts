@@ -1,5 +1,6 @@
 import { sign, verify } from "hono/jwt";
 import { User } from "../v1/authentication/auth_schema";
+import { TokenError } from "./error_code";
 
 const SECRET_KEY = process.env.SECRET_KEY || "token";
 
@@ -18,6 +19,6 @@ export async function verifyToken(token: string) {
 		const data = await verify(token, SECRET_KEY);
 		return data;
 	} catch (_) {
-		throw new Error("Invalid or Expired Token");
+		throw new TokenError("Invalid or Expired Token");
 	}
 }

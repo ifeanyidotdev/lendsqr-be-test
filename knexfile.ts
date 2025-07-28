@@ -33,6 +33,16 @@ const config: { [key: string]: Knex.Config } = {
 			directory: "./src/db/seeds",
 		},
 	},
+	testing: {
+		client: "better-sqlite3",
+		connection: {
+			filename: ":memory",
+		},
+		migrations: {
+			directory: "./src/db/migrations",
+			tableName: "knex_migrations",
+		},
+	},
 };
 
 export default config;

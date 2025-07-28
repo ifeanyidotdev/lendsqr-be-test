@@ -9,6 +9,6 @@ export default defineConfig({
 			reporter: ["text", "json", "html"],
 			exclude: ["dist/**", "migrations/**", "knexfile.ts"],
 		},
-		include: ["test/**/*.test.ts", "src/**/*.test.ts"],
+		include: ["tests/**/*.test.ts", "src/**/*.test.ts"],
 	},
 });

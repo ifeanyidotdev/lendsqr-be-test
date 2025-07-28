@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test": "NODE_ENV=testing vitest run",
+    "test:coverage": "NODE_ENV=testing vitest run --coverage",
     "build": "tsc",
     "run:migrate": "tsnd src/db/migrate.ts",
     "dev:migrate": "knex migrate:latest --env development",
+    "test:migrate": "knex migrate:latest --env testing",
     "dev:migrate:up": "knex migrate:up --env development",
     "prod:migrate": "knex migrate:latest --env production",
     "start": "node dist/src/server.js",
@@ -21,6 +22,8 @@
   "dependencies": {
     "@hono/node-server": "^1.17.1",
     "@hono/zod-validator": "^0.7.2",
+    "argon2": "^0.43.1",
+    "better-sqlite3": "^12.2.0",
     "dotenv": "^17.2.1",
     "hono": "^4.8.9",
     "knex": "^3.1.0",
@@ -28,10 +31,10 @@
     "zod": "^4.0.10"
   },
   "devDependencies": {
-    "vitest": "^3.2.4",
     "@types/node": "^24.1.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
   }
 }
