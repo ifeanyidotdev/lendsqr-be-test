@@ -4,7 +4,7 @@ const config: { [key: string]: Knex.Config } = {
 	development: {
 		client: "mysql2",
 		connection: {
-			host: process.env.DB_HOST || "mysql",
+			host: process.env.DB_HOST || "localhost",
 			user: process.env.DB_USER || "root",
 			password: process.env.DB_PASSWORD || "rootpassword",
 			database: process.env.DB_NAME || "mydb",
@@ -31,6 +31,16 @@ const config: { [key: string]: Knex.Config } = {
 		},
 		seeds: {
 			directory: "./src/db/seeds",
+		},
+	},
+	testing: {
+		client: "better-sqlite3",
+		connection: {
+			filename: ":memory",
+		},
+		migrations: {
+			directory: "./src/db/migrations",
+			tableName: "knex_migrations",
 		},
 	},
 };

@@ -21,8 +21,8 @@ export async function up(knex: Knex): Promise<void> {
 		table.decimal("balance").notNullable().defaultTo("0.00");
 		table.decimal("pending_balance").notNullable().defaultTo("0.00");
 		table.string("wallet_number", 10).notNullable();
-		table.string("currency", 10).notNullable();
-		table.boolean("is_default").defaultTo("false").notNullable();
+		table.string("currency", 10).notNullable().defaultTo("NGN");
+		table.boolean("is_default").defaultTo("true").notNullable();
 		table.timestamps({
 			useCamelCase: true,
 			defaultToNow: true,

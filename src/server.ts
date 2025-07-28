@@ -1,8 +1,13 @@
 import { serve } from "@hono/node-server";
+import env from "dotenv";
+env.config();
 import app from "./app";
 
+const PORT = process.env.PORT || 3000;
+
 function startServer() {
-	const server = serve({ fetch: app.fetch, port: 3000 });
+	const server = serve({ fetch: app.fetch, port: PORT as number });
+	console.log(`Server runing @ "http://localhost:${PORT}`);
 	process.on("SIGINT", () => {
 		server.close();
 		process.exit(0);
