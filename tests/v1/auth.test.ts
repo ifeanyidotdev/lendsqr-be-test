@@ -6,7 +6,7 @@ import { ErrorCode } from "../../src/utils/error_code";
 describe("Testing signing up flow", () => {
 	it("testing with correct data for success", async () => {
 		const data = {
-			email: "emma5@gmail.com",
+			email: "emma8@gmail.com",
 			first_name: "emma",
 			last_name: "tester",
 			password: "Password11@",

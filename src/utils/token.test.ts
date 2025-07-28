@@ -6,8 +6,8 @@ describe("test generating access token", () => {
 		const user = {
 			id: 2343093,
 			email: "user@gmail.com",
-			firstName: "user",
-			lastName: "user",
+			first_name: "user",
+			last_name: "user",
 		};
 		const token = await generateToken(user);
 		expect(token).toBeTypeOf("string");
@@ -21,8 +21,8 @@ describe("test validating token", () => {
 		token = await generateToken({
 			id: 98983,
 			email: "user@gmail.com",
-			firstName: "user",
-			lastName: "user",
+			first_name: "user",
+			last_name: "user",
 		});
 	});
 
