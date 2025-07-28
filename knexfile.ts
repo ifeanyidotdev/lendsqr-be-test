@@ -2,9 +2,9 @@ import type { Knex } from "knex";
 
 const config: { [key: string]: Knex.Config } = {
 	development: {
-		client: "mysql",
+		client: "mysql2",
 		connection: {
-			host: process.env.DB_HOST || "localhost",
+			host: process.env.DB_HOST || "mysql",
 			user: process.env.DB_USER || "root",
 			password: process.env.DB_PASSWORD || "rootpassword",
 			database: process.env.DB_NAME || "mydb",
@@ -18,7 +18,7 @@ const config: { [key: string]: Knex.Config } = {
 		},
 	},
 	production: {
-		client: "mysql",
+		client: "mysql2",
 		connection: {
 			host: process.env.DB_HOST,
 			user: process.env.DB_USER,
