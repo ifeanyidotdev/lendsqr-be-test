@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import * as argon from "argon2";
 import { knexClient } from "../../db/index";
 import { SigninSchemaType, SignupSchemaType, User } from "./auth_schema";
-import { ApplicationError } from "../../utils/error_code";
+import { ApplicationError, ErrorCode } from "../../utils/error_code";
 import { generateToken } from "../../utils/token";
 
 export default class AuthService {
@@ -43,7 +43,10 @@ export default class AuthService {
 				.first();
 
 			if (userExist) {
-				throw new ApplicationError("Account is taken");
+				throw new ApplicationError(
+					"Account is taken",
+					ErrorCode.ACCOUNT_CREATION,
+				);
 			}
 			const hashPw = await argon.hash(data.password);
 
@@ -87,14 +90,20 @@ export default class AuthService {
 				.first();
 
 			if (!user) {
-				throw new ApplicationError("Incorrect Credential");
+				throw new ApplicationError(
+					"Incorrect Credential",
+					ErrorCode.CREDENTIAL_ERROR,
+				);
 			}
 			const isCorrectPwd: boolean = await argon.verify(
 				user.password,
 				data.password,
 			);
 			if (!isCorrectPwd) {
-				throw new ApplicationError("Incorrect Credential");
+				throw new ApplicationError(
+					"Incorrect Credential",
+					ErrorCode.CREDENTIAL_ERROR,
+				);
 			}
 			const accessToken: string = await generateToken(user);
 			const res = {

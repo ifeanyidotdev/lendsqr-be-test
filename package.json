@@ -10,6 +10,7 @@
     "run:migrate": "tsnd src/db/migrate.ts",
     "dev:migrate": "knex migrate:latest --env development",
     "test:migrate": "knex migrate:latest --env testing",
+    "test:migrate:rollback": "knex migrate:rollback --all --env testing",
     "dev:migrate:up": "knex migrate:up --env development",
     "prod:migrate": "knex migrate:latest --env production",
     "start": "node dist/src/server.js",
