@@ -7,6 +7,7 @@ class UserController {
 
 	constructor(service: UserService) {
 		this.service = service;
+		this.getUser = this.getUser.bind(this);
 	}
 
 	async getUser(c: Context) {
@@ -22,6 +23,8 @@ class UserController {
 				200,
 			);
 		} catch (error) {
+			console.log(error);
+
 			if (error instanceof ApplicationError) {
 				return c.json(
 					{

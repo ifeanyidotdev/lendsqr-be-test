@@ -34,6 +34,15 @@ export default class AuthService {
 		return false;
 	}
 
+	/**
+	 * hanldes the signup of user account by users providing their basic info
+	 * takes a @type SignupSchemaType which is a definition of the params
+	 * @param email string
+	 * @param first_name string
+	 * @param last_name string
+	 * @param password  string
+	 * @returns a user data is returned
+	 **/
 	async signup(data: SignupSchemaType) {
 		try {
 			const userExist = await this.client
@@ -81,6 +90,13 @@ export default class AuthService {
 		}
 	}
 
+	/**
+	 * hanldes the signin of user account by user providing their credentials
+	 * takes a @type SigninSchemaType which is a definition of the params
+	 * @param email string
+	 * @param password  string
+	 * @returns a data {user, token} where token is the access token
+	 **/
 	async signin(data: SigninSchemaType) {
 		try {
 			const user = await this.client

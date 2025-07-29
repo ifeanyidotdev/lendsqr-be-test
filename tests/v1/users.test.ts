@@ -41,8 +41,6 @@ describe("testing that user information is correct", () => {
 			headers: new Headers({ "Content-Type": "application/json" }),
 		});
 
-		console.log(res);
-
 		expect(res.status).toBe(200);
 		const json = await res.json();
 
@@ -54,5 +52,19 @@ describe("testing that user information is correct", () => {
 			id: user.id,
 		});
 	});
-	it("test that a user profile was not found on the database", async () => {});
+
+	it("test that a user profile was not found on the database", async () => {
+		const res = await app.request(`api/v1/users/34`, {
+			method: "GET",
+			headers: new Headers({ "Content-Type": "application/json" }),
+		});
+
+		expect(res.status).toBe(404);
+
+		const json = await res.json();
+
+		expect(json).toMatchObject({
+			status_code: ErrorCode.NOT_FOUND_ERROR,
+		});
+	});
 });

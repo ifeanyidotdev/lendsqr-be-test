@@ -8,7 +8,11 @@ export default class UserService {
 	constructor() {
 		this.client = knexClient;
 	}
-
+	/**
+	 * this gets the user by its id and throws NOT_FOUND_ERROR if none exist
+	 * @param id: number, which is the id of the user you want to return its data
+	 * @returns a user data
+	 **/
 	async getUser(id: number) {
 		const user = await this.client
 			.select("id", "email", "first_name", "last_name")
