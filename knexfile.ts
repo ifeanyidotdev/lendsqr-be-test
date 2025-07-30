@@ -8,6 +8,7 @@ const config: { [key: string]: Knex.Config } = {
 			user: process.env.DB_USER || "root",
 			password: process.env.DB_PASSWORD || "rootpassword",
 			database: process.env.DB_NAME || "mydb",
+			port: (process.env.DB_PORT || 3306) as number,
 		},
 		migrations: {
 			directory: "./src/db/migrations",
@@ -24,6 +25,7 @@ const config: { [key: string]: Knex.Config } = {
 			user: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_NAME,
+			port: (process.env.DB_PORT || 3306) as number,
 		},
 		migrations: {
 			directory: "./src/db/migrations",
