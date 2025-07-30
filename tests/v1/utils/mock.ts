@@ -31,3 +31,20 @@ export async function createMockUser<T extends { email: string }>(
 	const token = json.data.token;
 	return { user, token };
 }
+
+export async function getMockUserWalletNumber(
+	app: Hono,
+	data: { email: string },
+): Promise<number> {
+	const { user, token } = await createMockUser(app, data);
+	const res = await app.request(`api/v1/users/${user.id}`, {
+		method: "GET",
+		headers: new Headers({
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		}),
+	});
+	const json = await res.json();
+	const wallet_number = json.data.wallet_number;
+	return parseInt(wallet_number);
+}

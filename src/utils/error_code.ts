@@ -9,17 +9,9 @@ export class ErrorCode {
 	static ACCOUNT_CREATION = "ACCOUNT_CREATION";
 	static NOT_FOUND_ERROR = "NOT_FOUND_ERROR";
 	static AUTHORIZATION_ERROR = "AUTHORIZATION_ERROR";
+	static WALLET_ERROR = "WALLET_ERROR";
 }
 
-export class TokenError extends Error {
-	code: string;
-	constructor(message: string, code: string) {
-		super(message);
-		this.name = "TokenError";
-		this.code = code;
-		Object.setPrototypeOf(this, TokenError.prototype);
-	}
-}
 export class ApplicationError extends Error {
 	code: string;
 	status?: ContentfulStatusCode;

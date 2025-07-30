@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { isAuthenticated } from "../../middleware/auth";
 import { zValidator } from "@hono/zod-validator";
-import { DepositSchema } from "./wallet_schema";
+import { DepositSchema, TransferSchema } from "./wallet_schema";
 import { ErrorCode } from "../../utils/error_code";
 import WalletController from "./wallet_controller";
 
@@ -23,5 +23,39 @@ walletRoutes.post(
 		}
 	}),
 	WalletController.deposit,
+);
+
+walletRoutes.post(
+	"/withdraw",
+	zValidator("json", DepositSchema, (result, c) => {
+		if (!result.success) {
+			return c.json(
+				{
+					status_code: ErrorCode.VALIDATION_ERROR,
+					message: "Validation Error",
+					errors: result.error.issues,
+				},
+				400,
+			);
+		}
+	}),
+	WalletController.withdraw,
+);
+
+walletRoutes.post(
+	"/transfer",
+	zValidator("json", TransferSchema, (result, c) => {
+		if (!result.success) {
+			return c.json(
+				{
+					status_code: ErrorCode.VALIDATION_ERROR,
+					message: "Validation Error",
+					errors: result.error.issues,
+				},
+				400,
+			);
+		}
+	}),
+	WalletController.transfer,
 );
 export default walletRoutes;
