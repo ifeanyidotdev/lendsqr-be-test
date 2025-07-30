@@ -2,7 +2,8 @@ import z from "zod";
 
 export const TransferSchema = z.object({
 	wallet_number: z.number({ error: "Wallet Number is required" }),
-	amount: z.string({ error: "Amount is required" }),
+	amount: z.number({ error: "Amount is required" }),
+	description: z.string({ error: "description is required" }),
 });
 
 export type TransferSchemaType = z.infer<typeof TransferSchema> & {

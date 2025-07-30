@@ -2,18 +2,21 @@ import { describe, it, beforeAll, expect } from "vitest";
 import app from "../../src/app";
 import { User } from "../../src/v1/authentication/auth_schema";
 import { ErrorCode } from "../../src/utils/error_code";
-import { createMockUser } from "./utils/mock";
+import { createMockUser, getMockUserWalletNumber } from "./utils/mock";
 
 describe("testing that user wallet functions as expected", () => {
 	let userData: User & { id: number; balance: number; pending_balance: number };
 	let access_token: string;
-
+	let receiversWalletNumber: number;
 	beforeAll(async () => {
 		const { user, token } = await createMockUser(app, {
 			email: "tester3@gmail.com",
 		});
 		userData = user;
 		access_token = token;
+		receiversWalletNumber = await getMockUserWalletNumber(app, {
+			email: "tester10@app.com",
+		});
 	});
 
 	it("test that user wallet was incremented after the deposit occured", async () => {
@@ -77,22 +80,22 @@ describe("testing that user wallet functions as expected", () => {
 	});
 
 	it("test that user tranfer was successful and balance was decrimented ", async () => {
-		const deposit = {
+		const transferData = {
 			amount: 2000,
-			wallet_number: 93893893893,
+			wallet_number: receiversWalletNumber,
 			description: "this is testing transfer",
 		};
 		const res = await app.request("api/v1/wallet/transfer", {
 			method: "POST",
-			body: JSON.stringify(deposit),
+			body: JSON.stringify(transferData),
 			headers: new Headers({
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${access_token}`,
 			}),
 		});
+		const json = await res.json();
 
 		expect(res.status).toBe(200);
-		const json = await res.json();
 
 		expect(json).toMatchObject({
 			status_code: ErrorCode.SUCCESS,
@@ -102,6 +105,77 @@ describe("testing that user wallet functions as expected", () => {
 		expect(json.data).toMatchObject({
 			balance: "2000.00",
 			pending_balance: "2000.00",
+		});
+	});
+
+	it("test that ther senders balance is less than the amount being transfered", async () => {
+		const transferData = {
+			amount: 6000,
+			wallet_number: receiversWalletNumber,
+			description: "this is testing transfer",
+		};
+		const res = await app.request("api/v1/wallet/transfer", {
+			method: "POST",
+			body: JSON.stringify(transferData),
+			headers: new Headers({
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			}),
+		});
+		const json = await res.json();
+
+		expect(res.status).toBe(400);
+
+		expect(json).toMatchObject({
+			status_code: ErrorCode.WALLET_ERROR,
+			message: "Insufficient Balance",
+		});
+	});
+
+	it("should throw an error if transfer does not receive a valid body", async () => {
+		const transferData = {
+			amount: 2000,
+			wallet_number: receiversWalletNumber,
+		};
+		const res = await app.request("api/v1/wallet/transfer", {
+			method: "POST",
+			body: JSON.stringify(transferData),
+			headers: new Headers({
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			}),
+		});
+		const json = await res.json();
+
+		expect(res.status).toBe(400);
+
+		expect(json).toMatchObject({
+			status_code: ErrorCode.VALIDATION_ERROR,
+			message: "Validation Error",
+		});
+	});
+
+	it("test that receiver wallet number does not match any users wallet and error should return ", async () => {
+		const transferData = {
+			amount: 2000,
+			wallet_number: 27387287282,
+			description: "this is testing transfer",
+		};
+		const res = await app.request("api/v1/wallet/transfer", {
+			method: "POST",
+			body: JSON.stringify(transferData),
+			headers: new Headers({
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			}),
+		});
+		const json = await res.json();
+
+		expect(res.status).toBe(404);
+
+		expect(json).toMatchObject({
+			status_code: ErrorCode.NOT_FOUND_ERROR,
+			message: "Receivers Wallet not found",
 		});
 	});
 });
