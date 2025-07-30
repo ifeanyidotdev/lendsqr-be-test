@@ -112,6 +112,7 @@
   },
   "include": [
     "src/**/*",
-    "knexfile.ts"
+    "knexfile.ts",
+    "src/types/custom.d.ts"
   ]
 }
