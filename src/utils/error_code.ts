@@ -8,6 +8,7 @@ export class ErrorCode {
 	static CREDENTIAL_ERROR = "CREDENTIAL_ERROR";
 	static ACCOUNT_CREATION = "ACCOUNT_CREATION";
 	static NOT_FOUND_ERROR = "NOT_FOUND_ERROR";
+	static AUTHORIZATION_ERROR = "AUTHORIZATION_ERROR";
 }
 
 export class TokenError extends Error {

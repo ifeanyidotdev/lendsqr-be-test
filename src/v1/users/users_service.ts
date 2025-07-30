@@ -15,9 +15,21 @@ export default class UserService {
 	 **/
 	async getUser(id: number) {
 		const user = await this.client
-			.select("id", "email", "first_name", "last_name")
+			.select(
+				"users.id",
+				"users.email",
+				"users.first_name",
+				"users.last_name",
+				"wallet.wallet_number",
+				"wallet.balance",
+				"wallet.pending_balance",
+				"wallet.id as walletId",
+			)
 			.from("users")
-			.where({ id })
+			.where({ "users.id": id })
+			.join("wallet", function () {
+				this.on("wallet.user_id", "=", "users.id");
+			})
 			.first();
 
 		if (!user)

@@ -23,8 +23,6 @@ class UserController {
 				200,
 			);
 		} catch (error) {
-			console.log(error);
-
 			if (error instanceof ApplicationError) {
 				return c.json(
 					{

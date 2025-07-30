@@ -23,7 +23,6 @@ class AuthController {
 				201,
 			);
 		} catch (err) {
-			console.error(err);
 			if (err instanceof ApplicationError) {
 				return c.json(
 					{
@@ -54,7 +53,6 @@ class AuthController {
 				data: res,
 			});
 		} catch (err) {
-			console.error(err);
 			if (err instanceof ApplicationError) {
 				return c.json(
 					{

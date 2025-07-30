@@ -28,9 +28,10 @@ describe("test validating token", () => {
 
 	it("test verify token successeds", async () => {
 		const payload = await verifyToken(token);
-		expect(payload.user_id).toBe(98983);
+		expect(payload.userId).toBe(98983);
 		expect(payload.email).toMatch("user@gmail.com");
 	});
+
 	it("test verify token successeds", async () => {
 		await expect(() => verifyToken("sometoken")).rejects.toThrowError(
 			"Invalid or Expired Token",
