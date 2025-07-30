@@ -57,12 +57,12 @@ export default class WalletService {
 		}
 	}
 
-	async withdraw(depositData: DepositSchemaType) {
+	async withdraw(withdrawData: DepositSchemaType) {
 		try {
 			const wallet = await this.client
 				.select("*")
 				.from<Wallet>("wallet")
-				.where({ user_id: depositData.userId })
+				.where({ user_id: withdrawData.userId })
 				.first();
 
 			if (wallet == undefined) {
@@ -72,26 +72,33 @@ export default class WalletService {
 					400,
 				);
 			}
+			if (wallet.balance < withdrawData.amount) {
+				throw new ApplicationError(
+					"Insufficient Balance",
+					ErrorCode.WALLET_ERROR,
+					400,
+				);
+			}
 			const result = await this.client.transaction(async (trx) => {
-				const balance_after = wallet.balance + depositData.amount;
+				const balance_after = wallet.balance - withdrawData.amount;
 				await trx("wallet")
 					.where("id", "=", wallet.id)
-					.decrement("balance", depositData.amount)
-					.decrement("pending_balance", depositData.amount);
+					.decrement("balance", withdrawData.amount)
+					.decrement("pending_balance", withdrawData.amount);
 
 				await trx("transaction").insert({
-					user_id: depositData.userId,
+					user_id: withdrawData.userId,
 					wallet_id: wallet.id,
 					transaction_type: TransactionType.WITHDRAWAL,
 					transaction_status: TransactionStatus.SUCCESS,
-					amount: depositData.amount,
+					amount: withdrawData.amount,
 					balance_after,
 					currency: "NGN",
 				});
 				const updatedWallet = await trx
 					.select("*")
 					.from<Wallet>("wallet")
-					.where({ user_id: depositData.userId })
+					.where({ user_id: withdrawData.userId })
 					.first();
 
 				return updatedWallet;

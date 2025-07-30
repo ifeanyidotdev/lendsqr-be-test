@@ -97,7 +97,6 @@ class WalletController {
 				data: res,
 			});
 		} catch (error) {
-			console.log(error);
 			if (error instanceof ApplicationError) {
 				return c.json(
 					{
