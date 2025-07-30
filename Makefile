@@ -19,5 +19,5 @@ migrate:
 test:
 	 docker-compose -f test.yml up --build --abort-on-container-exit
 
-test-down:
+test-clean:
 	 docker-compose -f test.yml down -v --remove-orphans
