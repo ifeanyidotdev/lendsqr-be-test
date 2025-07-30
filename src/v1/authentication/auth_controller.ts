@@ -13,7 +13,6 @@ class AuthController {
 	async signup(c: Context) {
 		try {
 			const data = c.req.valid("json");
-
 			const res = await this.authService.signup(data);
 			return c.json(
 				{
@@ -24,11 +23,10 @@ class AuthController {
 				201,
 			);
 		} catch (err) {
-			console.error(err);
 			if (err instanceof ApplicationError) {
 				return c.json(
 					{
-						status_code: ErrorCode.VALIDATION_ERROR,
+						status_code: err.code,
 						message: err.message,
 					},
 					400,
@@ -55,11 +53,10 @@ class AuthController {
 				data: res,
 			});
 		} catch (err) {
-			console.error(err);
 			if (err instanceof ApplicationError) {
 				return c.json(
 					{
-						status_code: ErrorCode.VALIDATION_ERROR,
+						status_code: err.code,
 						message: err.message,
 					},
 					400,

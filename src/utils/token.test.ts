@@ -6,8 +6,8 @@ describe("test generating access token", () => {
 		const user = {
 			id: 2343093,
 			email: "user@gmail.com",
-			firstName: "user",
-			lastName: "user",
+			first_name: "user",
+			last_name: "user",
 		};
 		const token = await generateToken(user);
 		expect(token).toBeTypeOf("string");
@@ -21,16 +21,17 @@ describe("test validating token", () => {
 		token = await generateToken({
 			id: 98983,
 			email: "user@gmail.com",
-			firstName: "user",
-			lastName: "user",
+			first_name: "user",
+			last_name: "user",
 		});
 	});
 
 	it("test verify token successeds", async () => {
 		const payload = await verifyToken(token);
-		expect(payload.user_id).toBe(98983);
+		expect(payload.userId).toBe(98983);
 		expect(payload.email).toMatch("user@gmail.com");
 	});
+
 	it("test verify token successeds", async () => {
 		await expect(() => verifyToken("sometoken")).rejects.toThrowError(
 			"Invalid or Expired Token",

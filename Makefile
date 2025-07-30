@@ -15,3 +15,9 @@ migrate-up:
 
 migrate:
 	docker-compose -f local.yaml exec app pnpm run migrate:latest
+
+test:
+	 docker-compose -f test.yml up --build --abort-on-container-exit
+
+test-down:
+	 docker-compose -f test.yml down -v --remove-orphans

@@ -1,0 +1,30 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.test
+    # command: sh -c "pnpm run test:migrate:rollback && pnpm run test:migrate && pnpm run test"
+    environment:
+      - TEST_DB_HOST=test-db
+      - TEST_DB_USER=root
+      - TEST_DB_PASSWORD=rootpassword
+      - TEST_DB_NAME=lendsqr_be_test_testing
+    depends_on:
+      test-db:
+        condition: service_healthy
+ 
+  test-db:
+    image: mysql:8.0.43-oraclelinux9
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=lendsqr_be_test_testing
+    ports:
+      - '3307:3306'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+

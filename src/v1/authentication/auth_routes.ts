@@ -5,7 +5,6 @@ import { signinSchema, signupSchema } from "./auth_schema";
 import { ErrorCode } from "../../utils/error_code";
 
 const authRoutes = new Hono().basePath("/v1/auth");
-
 authRoutes.post(
 	"/signup",
 	zValidator("json", signupSchema, (result, c) => {

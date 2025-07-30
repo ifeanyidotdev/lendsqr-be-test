@@ -32,28 +32,28 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.createTable("transaction", (table) => {
 		table.bigIncrements("id").primary();
-		table.bigint("wallet_id").unsigned().notNullable().unique();
+		table.bigint("wallet_id").unsigned().notNullable();
 		table.foreign("wallet_id").references("wallet.id").onDelete("CASCADE");
-		table.bigint("user_id").unsigned().notNullable().unique();
+		table.bigint("user_id").unsigned().notNullable();
 		table.foreign("user_id").references("users.id").onDelete("CASCADE");
 		table.string("transaction_type", 15).notNullable();
 		table.string("transaction_status", 15).notNullable();
 		table.decimal("balance_after").notNullable().defaultTo("0.00");
 		table.decimal("amount").notNullable().defaultTo("0.00");
-		table.string("currency", 10).notNullable();
-		table.bigint("destination_user_id").unsigned().notNullable().unique();
+		table.string("currency", 10).notNullable().defaultTo("NGN");
+		table.bigint("destination_user_id").unsigned().nullable();
 		table
 			.foreign("destination_user_id")
 			.references("users.id")
 			.onDelete("CASCADE");
-		table.bigint("destination_wallet_id").unsigned().notNullable().unique();
+		table.bigint("destination_wallet_id").unsigned().nullable();
 		table
 			.foreign("destination_wallet_id")
 			.references("wallet.id")
 			.onDelete("CASCADE");
 
-		table.string("destination_user_name", 255).notNullable();
-		table.text("description").notNullable();
+		table.string("destination_user_name", 255).nullable();
+		table.text("description").nullable();
 		table.timestamps({
 			useCamelCase: true,
 			defaultToNow: true,
@@ -63,7 +63,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.dropTableIfExists("users");
-	await knex.schema.dropTableIfExists("wallet");
 	await knex.schema.dropTableIfExists("transaction");
+	await knex.schema.dropTableIfExists("wallet");
+	await knex.schema.dropTableIfExists("users");
 }

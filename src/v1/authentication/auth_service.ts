@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import * as argon from "argon2";
 import { knexClient } from "../../db/index";
 import { SigninSchemaType, SignupSchemaType, User } from "./auth_schema";
-import { ApplicationError } from "../../utils/error_code";
+import { ApplicationError, ErrorCode } from "../../utils/error_code";
 import { generateToken } from "../../utils/token";
 
 export default class AuthService {
@@ -34,6 +34,15 @@ export default class AuthService {
 		return false;
 	}
 
+	/**
+	 * hanldes the signup of user account by users providing their basic info
+	 * takes a @type SignupSchemaType which is a definition of the params
+	 * @param email string
+	 * @param first_name string
+	 * @param last_name string
+	 * @param password  string
+	 * @returns a user data is returned
+	 **/
 	async signup(data: SignupSchemaType) {
 		try {
 			const userExist = await this.client
@@ -43,7 +52,10 @@ export default class AuthService {
 				.first();
 
 			if (userExist) {
-				throw new ApplicationError("Account is taken");
+				throw new ApplicationError(
+					"Account is taken",
+					ErrorCode.ACCOUNT_CREATION,
+				);
 			}
 			const hashPw = await argon.hash(data.password);
 
@@ -78,6 +90,13 @@ export default class AuthService {
 		}
 	}
 
+	/**
+	 * hanldes the signin of user account by user providing their credentials
+	 * takes a @type SigninSchemaType which is a definition of the params
+	 * @param email string
+	 * @param password  string
+	 * @returns a data {user, token} where token is the access token
+	 **/
 	async signin(data: SigninSchemaType) {
 		try {
 			const user = await this.client
@@ -87,14 +106,20 @@ export default class AuthService {
 				.first();
 
 			if (!user) {
-				throw new ApplicationError("Incorrect Credential");
+				throw new ApplicationError(
+					"Incorrect Credential",
+					ErrorCode.CREDENTIAL_ERROR,
+				);
 			}
 			const isCorrectPwd: boolean = await argon.verify(
 				user.password,
 				data.password,
 			);
 			if (!isCorrectPwd) {
-				throw new ApplicationError("Incorrect Credential");
+				throw new ApplicationError(
+					"Incorrect Credential",
+					ErrorCode.CREDENTIAL_ERROR,
+				);
 			}
 			const accessToken: string = await generateToken(user);
 			const res = {

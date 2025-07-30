@@ -34,13 +34,17 @@ const config: { [key: string]: Knex.Config } = {
 		},
 	},
 	testing: {
-		client: "better-sqlite3",
+		client: "mysql2",
 		connection: {
-			filename: ":memory",
+			host: process.env.TEST_DB_HOST || "localhost",
+			user: process.env.TEST_DB_USER || "root",
+			password: process.env.TEST_DB_PASSWORD || "rootpassword",
+			database: process.env.TEST_DB_NAME || "lendsqr_be_test_testing",
 		},
 		migrations: {
 			directory: "./src/db/migrations",
 			tableName: "knex_migrations",
+			loadExtensions: [".ts"],
 		},
 	},
 };
