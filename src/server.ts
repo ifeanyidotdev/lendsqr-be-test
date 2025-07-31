@@ -3,7 +3,7 @@ import env from "dotenv";
 env.config();
 import app from "./app";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 function startServer() {
 	const server = serve({ fetch: app.fetch, port: PORT as number });
