@@ -15,7 +15,8 @@ class WalletController {
 
 	async deposit(c: Context) {
 		try {
-			const data: DepositSchemaType = c.req.valid("json");
+			const data: DepositSchemaType = await c.req.json();
+
 			const payload = c.get("jwtPayload");
 			const res = await this.service.deposit({
 				amount: data.amount,
@@ -49,7 +50,7 @@ class WalletController {
 
 	async withdraw(c: Context) {
 		try {
-			const data: DepositSchemaType = c.req.valid("json");
+			const data: DepositSchemaType = await c.req.json();
 			const payload = c.get("jwtPayload");
 			const res = await this.service.withdraw({
 				amount: data.amount,
@@ -83,7 +84,7 @@ class WalletController {
 	}
 	async transfer(c: Context) {
 		try {
-			const data: TransferSchemaType = c.req.valid("json");
+			const data: TransferSchemaType = await c.req.json();
 			const payload = c.get("jwtPayload");
 			const res = await this.service.transfer({
 				amount: data.amount,

@@ -1,6 +1,7 @@
 import { Context } from "hono";
 import AuthService from "./auth_service";
 import { ApplicationError, ErrorCode } from "../../utils/error_code";
+import { SigninSchemaType, SignupSchemaType } from "./auth_schema";
 
 class AuthController {
 	private authService: AuthService;
@@ -12,7 +13,7 @@ class AuthController {
 
 	async signup(c: Context) {
 		try {
-			const data = c.req.valid("json");
+			const data: SignupSchemaType = await c.req.json();
 			const res = await this.authService.signup(data);
 			return c.json(
 				{
@@ -44,7 +45,7 @@ class AuthController {
 
 	async signin(c: Context) {
 		try {
-			const data = c.req.valid("json");
+			const data: SigninSchemaType = await c.req.json();
 
 			const res = await this.authService.signin(data);
 			return c.json({
