@@ -9,3 +9,6 @@ pnpm run prod:migrate
 
 echo "Building project..."
 pnpm run build
+
+echo "Running app..."
+pnpm run start
