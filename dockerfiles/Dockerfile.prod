@@ -13,7 +13,6 @@ COPY . .
 RUN pnpm run build
 
 FROM node:lts-slim 
-
 WORKDIR /app
 
 RUN npm install -g pnpm
@@ -23,6 +22,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
 COPY --from=builder /app/knexfile.ts ./
 COPY --from=builder /app/src/db/migrations ./src/db/migrations
+COPY --from=builder /app/run-prod.sh ./
 
 RUN pnpm install --prod --frozen-lockfile
 
