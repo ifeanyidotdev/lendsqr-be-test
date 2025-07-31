@@ -16,4 +16,3 @@ EXPOSE 8000
 
 ENTRYPOINT [ "./run-prod.sh" ]
 
-CMD ["pnpm", "start"]
