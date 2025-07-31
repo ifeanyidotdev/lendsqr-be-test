@@ -5,7 +5,7 @@ echo "Waiting for DB to be ready..."
 sleep 5
 
 echo "Running migrations..."
-pnpm run prod:migrate:up
+pnpm run prod:migrate
 
 echo "Building project..."
 pnpm run build
