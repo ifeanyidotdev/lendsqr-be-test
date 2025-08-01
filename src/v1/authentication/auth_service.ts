@@ -5,6 +5,8 @@ import { SigninSchemaType, SignupSchemaType, User } from "./auth_schema";
 import { ApplicationError, ErrorCode } from "../../utils/error_code";
 import { generateToken } from "../../utils/token";
 
+const AJUTOR_API_KEY = process.env.AJUTOR_API_KEY;
+
 export default class AuthService {
 	private client: Knex;
 	constructor() {
@@ -22,13 +24,21 @@ export default class AuthService {
 	async checkCrediblity(email: string): Promise<boolean> {
 		const reponse = await fetch(
 			`https://adjutor.lendsqr.com/v2/verification/karma/${email}`,
+			{
+				headers: {
+					Authorization: `Bearer ${AJUTOR_API_KEY}`,
+				},
+			},
 		);
 		if (reponse.status != 200)
-			throw new Error("Could not validate your creditblity");
+			throw new ApplicationError(
+				"Could not validate your creditblity",
+				ErrorCode.CREDENTIAL_ERROR,
+				400,
+			);
 
 		const responseBody = await reponse.json();
-
-		if (responseBody.status == "success") {
+		if (responseBody.data.karma_identity == email) {
 			return true;
 		}
 		return false;
@@ -50,8 +60,9 @@ export default class AuthService {
 				.from<User>("users")
 				.where({ email: data.email })
 				.first();
+			const creditblity = await this.checkCrediblity(data.email);
 
-			if (userExist) {
+			if (userExist || creditblity) {
 				throw new ApplicationError(
 					"Account is taken",
 					ErrorCode.ACCOUNT_CREATION,
