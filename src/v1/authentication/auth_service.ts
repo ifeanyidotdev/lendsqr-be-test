@@ -4,8 +4,7 @@ import { knexClient } from "../../db/index";
 import { SigninSchemaType, SignupSchemaType, User } from "./auth_schema";
 import { ApplicationError, ErrorCode } from "../../utils/error_code";
 import { generateToken } from "../../utils/token";
-
-const AJUTOR_API_KEY = process.env.AJUTOR_API_KEY;
+import { AJUTOR_API_KEY } from "../../utils/config";
 
 export default class AuthService {
 	private client: Knex;
@@ -13,7 +12,7 @@ export default class AuthService {
 		this.client = knexClient;
 	}
 
-	genereateWalletNumber(): number {
+	private genereateWalletNumber(): number {
 		return parseInt(
 			Math.floor(1000000000 + Math.random() * 9000000000)
 				.toString()
@@ -21,8 +20,8 @@ export default class AuthService {
 		);
 	}
 
-	async checkCrediblity(email: string): Promise<boolean> {
-		const reponse = await fetch(
+	private async checkCrediblity(email: string): Promise<boolean> {
+		const response = await fetch(
 			`https://adjutor.lendsqr.com/v2/verification/karma/${email}`,
 			{
 				headers: {
@@ -30,18 +29,22 @@ export default class AuthService {
 				},
 			},
 		);
-		if (reponse.status != 200)
+
+		const responseBody = await response.json();
+
+		if (response.status != 200) {
 			throw new ApplicationError(
 				"Could not validate your creditblity",
 				ErrorCode.CREDENTIAL_ERROR,
 				400,
 			);
-
-		const responseBody = await reponse.json();
-		if (responseBody.data.karma_identity == email) {
-			return true;
 		}
-		return false;
+
+		if (responseBody.data && responseBody.data.karma_identity) {
+			return responseBody.data.karma_identity === email;
+		}
+
+		return true;
 	}
 
 	/**
@@ -60,11 +63,11 @@ export default class AuthService {
 				.from<User>("users")
 				.where({ email: data.email })
 				.first();
-			const creditblity = await this.checkCrediblity(data.email);
 
-			if (userExist || creditblity) {
+			const crediblity = await this.checkCrediblity(data.email);
+			if (userExist || crediblity) {
 				throw new ApplicationError(
-					"Account is taken",
+					"Account is taken or email is not credible",
 					ErrorCode.ACCOUNT_CREATION,
 				);
 			}
@@ -146,3 +149,4 @@ export default class AuthService {
 		}
 	}
 }
+

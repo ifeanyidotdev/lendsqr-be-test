@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.test
+    env_file:
+      - .env
     # command: sh -c "pnpm run test:migrate:rollback && pnpm run test:migrate && pnpm run test"
     environment:
       - TEST_DB_HOST=test-db

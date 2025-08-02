@@ -1,9 +1,6 @@
 import { serve } from "@hono/node-server";
-import env from "dotenv";
-env.config();
 import app from "./app";
-
-const PORT = process.env.PORT || 8000;
+import { PORT } from "./utils/config";
 
 function startServer() {
 	const server = serve({ fetch: app.fetch, port: PORT as number });
