@@ -21,6 +21,8 @@ jobs:
           docker-compose --version
 
       - name: Run tests via Makefile
+        env:
+          AJUTOR_API_KEY: ${{ secrets.AJUTOR_API_KEY}}
         run: |
           make test
 

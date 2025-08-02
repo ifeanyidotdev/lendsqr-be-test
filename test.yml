@@ -5,6 +5,9 @@ services:
       dockerfile: dockerfiles/Dockerfile.test
     # command: sh -c "pnpm run test:migrate:rollback && pnpm run test:migrate && pnpm run test"
     environment:
+      - NODE_ENV=test
+      - JWT_SECRET=your-secret-key
+      - AJUTOR_API_KEY=${AJUTOR_API_KEY}
       - TEST_DB_HOST=test-db
       - TEST_DB_USER=root
       - TEST_DB_PASSWORD=rootpassword
